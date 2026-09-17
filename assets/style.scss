@@ -67,12 +67,8 @@ div.copyright a {
     mask-image: url('images/shuffle.svg');
   }
 
-  &.megaphone {
-    mask-image: url('images/megaphone.svg');
-  }
-
-  &.shop {
-    mask-image: url('images/shop.svg');
+  &.palette {
+    mask-image: url('images/palette.svg');
   }
 
   &.record {
@@ -132,13 +128,14 @@ div.copyright a {
     width: 100%;
     // 오른쪽 칼럼이 패널 높이를 결정하면 '여러명'을 열 때 범위 행(div.row, 35px)만큼
     // 패널이 세로로 튄다. 왼쪽이 항상 더 크도록 그만큼 미리 확보해 높이를 고정한다
-    min-height: calc(5rem + 35px);
+    // (커스텀 구슬 행이 추가되어 35px을 더 확보한다)
+    min-height: calc(5rem + 70px);
     border: none;
     background: #999;
     font-size: 14pt;
   }
 
-  button, .btn {
+  button {
     color: #fefefe;
     background: #222;
     border: none;
@@ -156,15 +153,6 @@ div.copyright a {
       bottom: 0;
       background: rgba(0, 0, 0, 0.5);
     }
-  }
-
-  // <a class="btn">가 <button>과 같은 크기/모양으로 보이도록
-  a.btn {
-    text-decoration: none;
-    font-size: 10pt;
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
   }
 
   div.theme {
@@ -348,7 +336,7 @@ div.copyright a {
   }
 }
 
-#notice {
+#marbleSkins {
   display: none;
   position: fixed;
   overflow: hidden;
@@ -363,6 +351,7 @@ div.copyright a {
   padding: 10px 10px;
   color: #333;
   flex-direction: column;
+  max-height: 90%;
 
   h2 {
     background-color: #58c9af;
@@ -378,16 +367,100 @@ div.copyright a {
     font-size: 2em;
   }
 
-  div.notice-body {
-    padding: 0 .5em;
+  &.open {
+    display: flex;
+  }
 
-    h3 {
-      font-size: 1.5em;
-      margin: .83em 0;
+  div.modal-body {
+    padding: 0 .5em;
+    overflow-y: auto;
+    min-height: 0;
+    flex-grow: 1;
+  }
+
+  .skin-help {
+    font-size: .95em;
+    line-height: 1.5;
+  }
+
+  button {
+    color: #fefefe;
+    background: #222;
+    border: none;
+    border-radius: 5px;
+    padding: 5px 10px;
+    flex-shrink: 0;
+    cursor: pointer;
+
+    &.skin-remove {
+      background: #b33;
     }
   }
 
-  div.notice-action {
+  ul.skin-list {
+    list-style: none;
+    margin: 0 0 1em;
+    padding: 0;
+
+    li {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 0;
+      border-bottom: 1px solid #ccc;
+    }
+
+    li.skin-empty {
+      color: #666;
+      justify-content: center;
+    }
+  }
+
+  .skin-thumb {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    object-fit: cover;
+    border: 2px dashed #aaa;
+  }
+
+  img.skin-thumb {
+    border: 2px solid #58c9af;
+  }
+
+  .skin-name {
+    flex-grow: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-weight: bold;
+
+    small {
+      margin-left: 6px;
+      color: #888;
+      font-weight: normal;
+    }
+  }
+
+  form.skin-add {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 1em;
+
+    input {
+      flex-grow: 1;
+      min-width: 0;
+      padding: 5px 8px;
+      border: 1px solid #aaa;
+      border-radius: 5px;
+      font-size: 11pt;
+    }
+  }
+
+  div.modal-action {
+    padding-top: 10px;
     display: flex;
     justify-content: center;
 
@@ -508,7 +581,7 @@ div.copyright a {
   }
 
 
-  #notice {
+  #marbleSkins {
     position: fixed;
     box-sizing: border-box;
     top: 0;
@@ -525,9 +598,7 @@ div.copyright a {
     display: none;
     flex-direction: column;
 
-    div.notice-body {
-      flex-grow: 1;
-    }
+    max-height: 100%;
 
   }
 
@@ -542,7 +613,7 @@ div.toast {
   overflow: hidden;
   bottom: 10px;
   left: 50%;
-  z-index: 1000;
+  z-index: 1002;
   animation: .2s linear fade-in, .2s linear 1s reverse fade-in;
 }
 
@@ -556,54 +627,4 @@ div.toast {
     opacity: 1;
     transform: translate(-50%, 0);
   }
-}
-
-.link_donation {
-  display: flex;
-  padding: 1em;
-  width: 100%;
-  align-items: center;
-  justify-content: center;
-  background: repeating-linear-gradient(
-          45deg,
-          #ffaa00,
-          #ffaa00 20px,
-          #222222 20px,
-          #222222 40px
-  );
-  color: white;
-  font-size: 1.5em;
-  font-weight: bold;
-  border-radius: .5em;
-  margin-bottom: 1em;
-  text-decoration: none;
-  text-shadow: -2px 0px black, 0px 2px black, 2px 0px black, 0px -2px black;
-}
-
-
-.shop-button {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  padding: .2em .4em .4em .4em;
-  margin: 0 auto;
-  width: fit-content;
-
-  color: white;
-  font-size: 32px;
-  line-height: 48px;
-  font-weight: bold;
-  text-decoration: none;
-
-  img {
-    width: 48px;
-    height: 48px;
-    margin-right: .2em;
-    margin-bottom: -4px;
-  }
-
-  background-color: #0077ff;
-  border: 2px solid black;
-  border-radius: 10px;
 }

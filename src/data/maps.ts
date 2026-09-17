@@ -1,26 +1,17 @@
 import type { MapEntity } from '../types/MapEntity.type';
 
-export type AdBoard = {
-  x: number;
-  y: number;
-  w?: number;
-  h?: number;
-};
-
 export type StageDef = {
   title: string;
   entities?: MapEntity[];
   goalY: number;
   zoomY: number;
-  adBoards?: AdBoard[];
 };
 
 export const stages: StageDef[] = [
   {
-    title: 'Wheel of fortune',
+    title: '운명의 수레바퀴',
     goalY: 111,
     zoomY: 106.75,
-    adBoards: [{ x: 15.92, y: 104.3, w: 5, h: 1.25 }],
     entities: [
       // polyline
       {
@@ -436,13 +427,9 @@ export const stages: StageDef[] = [
     ],
   },
   {
-    title: 'BubblePop',
+    title: '버블팝',
     goalY: 83,
     zoomY: 78,
-    adBoards: [
-      { y: 80.5, x: 10 },
-      { y: 80.5, x: 15.05 },
-    ],
     entities: [
       {
         type: 'static',
@@ -901,10 +888,9 @@ export const stages: StageDef[] = [
     ],
   },
   {
-    title: 'Pot of greed',
+    title: '욕망의 항아리',
     goalY: 91,
     zoomY: 92.5,
-    adBoards: [{ x: 13.0, y: 75.5, w: 9.5, h: 2.375 }],
     entities: [
       {
         type: 'static',
@@ -1216,13 +1202,9 @@ export const stages: StageDef[] = [
     ],
   },
   {
-    title: 'Yoru ni Kakeru',
+    title: '밤을 달리다 (by item4)',
     goalY: 248,
     zoomY: 234.5,
-    adBoards: [
-      { x: 11.5, y: 12, w: 16, h: 4 },
-      { x: 11.5, y: 155, w: 16, h: 4 },
-    ],
     entities: [
       {
         position: { x: 2, y: 0 },

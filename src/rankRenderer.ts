@@ -43,7 +43,7 @@ export class RankRenderer implements UIObject {
 
         navigator.clipboard.writeText(tsv.join('\n')).then(() => {
           if (this.messageHandler) {
-            this.messageHandler('The result has been copied');
+            this.messageHandler('결과가 복사되었습니다');
           }
         });
       }

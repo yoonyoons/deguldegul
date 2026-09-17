@@ -1,47 +1,37 @@
-# Marble roulette
+# 데굴데굴 추첨기
 
-This is a lucky draw by dropping marbles.
+구슬을 굴려 당첨자를 뽑는 추첨기입니다.
 
-[Demo]( https://lazygyu.github.io/roulette )
+[사이트 열기](https://yoonyoons.github.io/deguldegul/)
 
-# Requirements
+## 기능
 
-- Typescript
-- Parcel
-- box2d-wasm
+- 이름을 쉼표나 줄바꿈으로 구분해 입력합니다.
+  - `이름*3`: 그 이름의 구슬을 3개 넣습니다.
+  - `이름/2`: 가중치를 줍니다.
+- 당첨 순위: 첫번째, 마지막, n번째, 여러명(범위)
+- 맵 4종, 스킬, 녹화, 다크 모드, 미니맵, 빨리 감기
+- `?names=홍길동,김철수` 링크로 명단을 채울 수 있습니다.
+- **구슬 꾸미기**: 이름마다 이미지를 등록하고 설정에서 **커스텀 구슬**을 켜면 그 이름의 구슬에 이미지가 입혀집니다. 이미지는 브라우저(IndexedDB)에만 저장됩니다.
 
-# Development
+## 개발
 
 ```shell
 > yarn
 > yarn dev
 ```
 
-# Build
+## 빌드
 
 ```shell
 > yarn build
 ```
 
-# License
+`main` 브랜치에 push하면 GitHub Actions가 빌드해서 `gh-pages` 브랜치로 배포합니다.
 
-The source code is licensed under the [MIT License](./LICENSE).
+## 출처와 라이선스
 
-## Trademark
+이 프로젝트는 lazygyu의 [Marble Roulette](https://github.com/lazygyu/roulette)을 바탕으로 만들었습니다.
+원작 소스 코드는 [MIT 라이선스](./LICENSE)를 따르며, 원작자의 저작권 고지를 그대로 유지합니다.
 
-**"Marble Roulette"™** and **"마블 룰렛"™** are trademarks of lazygyu
-(trademark applications pending in the Republic of Korea).
-
-The MIT License applies to the **source code only**. It does **not** grant any
-right to use these names, or any confusingly similar name, as the name or
-branding of your own project, product, or service.
-
-You may freely fork, modify, and redistribute this code, including for
-commercial purposes, but please publish it under a different name. Nominative
-use — factually referring to this project (e.g. "based on Marble Roulette by
-lazygyu") — is fine.
-
-**"마블 룰렛"™ / "Marble Roulette"™** 은 lazygyu의 상표이며 현재 대한민국
-특허청에 상표 출원 중입니다. 소스 코드는 MIT 라이선스를 따르지만 위 명칭 및
-이에 혼동을 줄 수 있는 유사 명칭은 라이선스 대상이 아닙니다. 포크·수정·재배포는
-자유롭게 하시되 다른 이름을 사용해 주세요.
+"Marble Roulette"와 "마블 룰렛"은 lazygyu의 상표이며, 이 프로젝트는 원작자와 관련이 없습니다.

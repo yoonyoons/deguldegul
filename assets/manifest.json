@@ -1,7 +1,7 @@
 {
-  "name": "Marble roulette",
-  "short_name": "MR",
-  "id": "lazygyu.marble-roulette",
+  "name": "데굴데굴 추첨기",
+  "short_name": "데굴데굴",
+  "id": "yoonyoons.deguldegul",
   "icons": [
     {
       "src": "android-icon-36x36.png",
@@ -40,7 +40,7 @@
       "density": "4.0"
     }
   ],
-  "start_url": "https://lazygyu.github.io/roulette",
+  "start_url": "https://yoonyoons.github.io/deguldegul/",
   "display_override": [
     "fullscreen",
     "minimal-ui"

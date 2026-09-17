@@ -33,7 +33,7 @@ export class VideoRecorder {
         const d = new Date();
 
         downloadLink.href = videoUrl;
-        downloadLink.download = `marble_roulette_${d.getFullYear()}${pad(d.getMonth() + 1)}${pad(d.getDate())}${pad(d.getHours())}${pad(d.getMinutes())}${pad(d.getSeconds())}.mp4`;
+        downloadLink.download = `deguldegul_${d.getFullYear()}${pad(d.getMonth() + 1)}${pad(d.getDate())}${pad(d.getHours())}${pad(d.getMinutes())}${pad(d.getSeconds())}.mp4`;
         downloadLink.click();
         downloadLink.remove();
         URL.revokeObjectURL(videoUrl);
