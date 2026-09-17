@@ -7,8 +7,11 @@ import type { Marble } from './marble';
 import { MINIMAP_INSET, MINIMAP_WIDTH } from './minimap';
 import type { WinnerRange } from './options';
 import type { ParticleManager } from './particleManager';
+import { SchoolPainter } from './stages/schoolPainter';
+import type { StagePainter } from './stages/StagePainter';
 import type { ColorTheme } from './types/ColorTheme';
 import type { MapEntityState } from './types/MapEntity.type';
+import type { StageZone } from './types/StageZone.type';
 import type { VectorLike } from './types/VectorLike';
 import type { UIObject } from './UIObject';
 
@@ -25,6 +28,8 @@ export type RenderParameters = {
   result: Marble[] | null;
   size: VectorLike;
   theme: ColorTheme;
+  /** 시작 버튼을 누른 시각(performance.now). 시작 전이면 null */
+  startedAt: number | null;
 };
 
 const MAX_DISPLAY_WIDTH = 1920;
@@ -50,6 +55,8 @@ export class RouletteRenderer {
   /** 이름별 커스텀 구슬 이미지. null이면 커스텀 구슬을 쓰지 않는다 */
   private _skins: Map<string, CanvasImageSource> | null = null;
   private _resultCloseRect: HitRect | null = null;
+  private _painters: { school?: StagePainter } = {};
+  private _painter: StagePainter | null = null;
   private _resultPopupClosed = false;
   private _lastResult: Marble[] | null = null;
   get width() {
@@ -131,11 +138,25 @@ export class RouletteRenderer {
     this._skins = skins;
   }
 
+  private painterFor(stage: StageDef): StagePainter | null {
+    if (stage.painter === 'school') {
+      this._painters.school ??= new SchoolPainter();
+      return this._painters.school;
+    }
+    return null;
+  }
+
+  onZoneTrigger(zone: StageZone, x: number, y: number): void {
+    this._painter?.onZoneTrigger(zone, x, y);
+  }
+
   protected onBeforeEntities(): void {}
   protected onAfterScene(): void {}
 
   render(renderParameters: RenderParameters, uiObjects: UIObject[]) {
     this._theme = renderParameters.theme;
+    const painter = this.painterFor(renderParameters.stage);
+    this._painter = painter;
     this.ctx.fillStyle = this._theme.background;
     this.ctx.fillRect(0, 0, this._sceneCanvas.width, this._sceneCanvas.height);
 
@@ -146,10 +167,13 @@ export class RouletteRenderer {
     this.ctx.font = '0.4pt sans-serif';
     this.ctx.lineWidth = 3 / (renderParameters.camera.zoom + initialZoom);
     renderParameters.camera.renderScene(this.ctx, () => {
+      painter?.renderBackground(this.ctx, renderParameters);
       this.onBeforeEntities();
       this.renderEntities(renderParameters.entities);
+      painter?.renderObjects(this.ctx, renderParameters);
       this.renderEffects(renderParameters);
       this.renderMarbles(renderParameters);
+      painter?.renderForeground(this.ctx, renderParameters);
     });
     this.ctx.restore();
     this.onAfterScene();
@@ -238,6 +262,11 @@ export class RouletteRenderer {
     }
     this._resultCloseRect = null;
     if (!result) return;
+    const width = this._sceneCanvas.width;
+    const height = this._sceneCanvas.height;
+    if (this._painter?.renderResult(this.ctx, params, width, height, (marble) => this.getMarbleImage(marble.name))) {
+      return;
+    }
     // 1명이면 기존 하단 Winner 표시, 여러명이면 화면 중앙 당첨자 목록 팝업
     if (result.length === 1) {
       this.renderWinner(result[0], params.theme);

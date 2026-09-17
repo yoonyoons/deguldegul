@@ -12,6 +12,7 @@ import { Box2dPhysics } from './physics-box2d';
 import { RankRenderer } from './rankRenderer';
 import { RouletteRenderer } from './rouletteRenderer';
 import { SkillEffect } from './skillEffect';
+import { ZoneTracker } from './stageZones';
 import type { ColorTheme } from './types/ColorTheme';
 import type { MouseEventHandlerName, MouseEventName } from './types/mouseEvents.type';
 import type { UIObject } from './UIObject';
@@ -54,6 +55,11 @@ export class Roulette extends EventTarget {
   // 구슬 id(= order)는 매 라운드 재사용된다. 리셋 시 취소하지 않으면 이 타이머가
   // 뒤늦게 발화해 같은 id를 가진 새 라운드의 구슬을 지워버린다
   private _pendingRemovals: number[] = [];
+
+  private _zoneTracker = new ZoneTracker();
+  /** 시작 버튼을 누른 시각. 교문 연출 등에 쓴다 */
+  private _startedAt: number | null = null;
+  private _startTimer: number | null = null;
 
   private _uiObjects: UIObject[] = [];
 
@@ -171,6 +177,13 @@ export class Roulette extends EventTarget {
       }
     }
 
+    this._zoneTracker.update(
+      deltaTime,
+      this._marbles,
+      (id, dx, dy) => this.physics.addVelocity(id, dx, dy),
+      (zone, marble) => this._renderer.onZoneTrigger(zone, marble.x, marble.y)
+    );
+
     const targetIndex = this._targetIndex;
     const topY = this._marbles[targetIndex] ? this._marbles[targetIndex].y : 0;
     this._goalDist = Math.abs(this._stage.zoomY - topY);
@@ -249,6 +262,7 @@ export class Roulette extends EventTarget {
       result: this._result,
       size: { x: this._renderer.width, y: this._renderer.height },
       theme: this._theme,
+      startedAt: this._startedAt,
     };
     this._renderer.render(renderParams, this._uiObjects);
   }
@@ -341,12 +355,18 @@ export class Roulette extends EventTarget {
     }
 
     this.physics.createStage(this._stage);
+    this._zoneTracker = new ZoneTracker(this._stage.zones);
     this._camera.initializePosition();
   }
 
   public clearMarbles() {
     this._pendingRemovals.forEach((id) => window.clearTimeout(id));
     this._pendingRemovals = [];
+    if (this._startTimer !== null) {
+      window.clearTimeout(this._startTimer);
+      this._startTimer = null;
+    }
+    this._startedAt = null;
     this.physics.clearMarbles();
     this._result = null;
     this._winners = [];
@@ -367,14 +387,27 @@ export class Roulette extends EventTarget {
     this._winnerRange = clipWinnerRange(options.winnerRange, this._marbles.length);
     this._camera.startFollowingMarbles();
 
-    if (this._autoRecording) {
-      this._recorder.start().then(() => {
-        this.physics.start();
-        this._marbles.forEach((marble) => (marble.isActive = true));
-      });
-    } else {
+    const release = () => {
+      this._startTimer = null;
       this.physics.start();
       this._marbles.forEach((marble) => (marble.isActive = true));
+    };
+    // 교문 같은 출발 연출이 있는 맵은 연출이 끝난 뒤 구슬을 놓는다
+    const begin = () => {
+      this._startedAt = performance.now();
+      const delay = this._stage?.startDelayMs ?? 0;
+      if (delay > 0) {
+        this._particleManager.shot(this._renderer.width, this._renderer.height);
+        this._startTimer = window.setTimeout(release, delay);
+      } else {
+        release();
+      }
+    };
+
+    if (this._autoRecording) {
+      this._recorder.start().then(begin);
+    } else {
+      begin();
     }
   }
 
@@ -480,7 +513,15 @@ export class Roulette extends EventTarget {
         Math.min(Math.min(viewW / (spawnWidth + margin * 2), viewH / (spawnHeight + margin * 2)), 3)
       );
 
-      this._camera.initializePosition({ x: centerX, y: centerY }, zoom);
+      const startCamera = this._stage?.startCamera;
+      if (startCamera && rows <= 5) {
+        this._camera.initializePosition(
+          { x: startCamera.x, y: startCamera.y },
+          Math.min(zoom, startCamera.maxZoom)
+        );
+      } else {
+        this._camera.initializePosition({ x: centerX, y: centerY }, zoom);
+      }
     }
   }
 

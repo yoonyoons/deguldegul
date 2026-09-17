@@ -1,10 +1,20 @@
 import type { MapEntity } from '../types/MapEntity.type';
+import type { StageZone } from '../types/StageZone.type';
+import { schoolStage } from './schoolStage';
 
 export type StageDef = {
   title: string;
   entities?: MapEntity[];
   goalY: number;
   zoomY: number;
+  /** 구슬이 지나가면 속도를 바꾸는 구역 */
+  zones?: StageZone[];
+  /** 맵 그림을 그리는 painter */
+  painter?: 'school';
+  /** 시작 버튼을 누른 뒤 구슬이 움직이기까지 기다리는 시간(연출용) */
+  startDelayMs?: number;
+  /** 구슬이 5줄 이하일 때 시작 화면 카메라. 줌은 maxZoom을 넘지 않는다 */
+  startCamera?: { x: number; y: number; maxZoom: number };
 };
 
 export const stages: StageDef[] = [
@@ -2979,4 +2989,5 @@ export const stages: StageDef[] = [
       },
     ],
   },
+  schoolStage,
 ];

@@ -14,6 +14,9 @@ export interface IPhysics {
 
   shakeMarble(id: number): void;
 
+  /** 질량과 무관하게 같은 속도 변화를 준다 */
+  addVelocity(id: number, dx: number, dy: number): void;
+
   removeMarble(id: number): void;
 
   getMarblePosition(id: number): { x: number; y: number; angle: number };

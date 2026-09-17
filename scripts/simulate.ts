@@ -11,6 +11,7 @@ import Box2DFactory from 'box2d-wasm';
 import { STUCK_DELAY } from '../src/data/constants';
 import { stages } from '../src/data/maps';
 import { Box2dPhysics } from '../src/physics-box2d';
+import { ZoneTracker } from '../src/stageZones';
 
 const STEP_MS = 10;
 const MAX_SIM_SEC = 900;
@@ -74,6 +75,7 @@ async function simulate({ mapIdx, n, timeScale, stuckLenSq, seed }: Options): Pr
     p.createMarble(order, 10.25 + (order % 10) * 0.6, maxLine - line + lineDelta);
   }
   p.start();
+  const zones = new ZoneTracker(stage.zones);
 
   const alive = new Set<number>([...Array(n).keys()]);
   const last = new Map<number, { x: number; y: number }>();
@@ -86,6 +88,11 @@ async function simulate({ mapIdx, n, timeScale, stuckLenSq, seed }: Options): Pr
     p.step(stepSec);
     t += stepSec;
     while (pending.length && pending[0].at <= t) p.removeMarble(pending.shift()!.id);
+    zones.update(
+      STEP_MS,
+      [...alive].map((id) => ({ id, ...p.getMarblePosition(id) })),
+      (id, dx, dy) => p.addVelocity(id, dx, dy)
+    );
     for (const id of alive) {
       const pos = p.getMarblePosition(id);
       const prev = last.get(id);
@@ -129,6 +136,7 @@ async function bench(ns: number[]) {
   console.log('| 맵 | 구슬 | 첫 골인 | 마지막 골인 | 1초 내 최다 | 5초 내 최다 | 골인 간격 중앙값 | shake | 미완주 |');
   console.log('|---|---:|---:|---:|---:|---:|---:|---:|---:|');
   for (let m = 0; m < stages.length; m++) {
+    if (mapFilter !== undefined && m !== mapFilter) continue;
     for (const n of ns) {
       const r = await simulate({ mapIdx: m, n, timeScale: 1, stuckLenSq: STUCK_LEN_SQ, seed: 1 });
       const ts = r.goals;
@@ -163,6 +171,7 @@ async function stuck(ns: number[]) {
 }
 
 const [mode = 'bench', arg] = process.argv.slice(2);
+const mapFilter = process.env.MAP ? Number(process.env.MAP) : undefined;
 if (mode === 'bench') bench((arg ?? '6,16,30,100,300,1000').split(',').map(Number));
 else if (mode === 'stuck') stuck((arg ?? '6,16,30').split(',').map(Number));
 else console.error('usage: simulate.ts bench [counts] | stuck [counts]');

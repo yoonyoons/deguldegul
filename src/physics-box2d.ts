@@ -122,6 +122,13 @@ export class Box2dPhysics implements IPhysics {
     }
   }
 
+  addVelocity(id: number, dx: number, dy: number): void {
+    const body = this.marbleMap[id];
+    if (!body) return;
+    const mass = body.GetMass();
+    body.ApplyLinearImpulseToCenter(new this.Box2D.b2Vec2(dx * mass, dy * mass), true);
+  }
+
   removeMarble(id: number): void {
     const marble = this.marbleMap[id];
     if (marble) {

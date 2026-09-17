@@ -243,6 +243,13 @@
         </label>
         <select id="sltMap"></select>
       </div>
+      <div class="row row-school">
+        <label for="in_schoolName">
+          <i class="icon school"></i>
+          <span>학교 이름</span>
+        </label>
+        <input type="text" id="in_schoolName" maxlength="12" placeholder="우리 학교" autocomplete="off" />
+      </div>
       <div class="row row-toggles">
         <div class='toggle-item'>
           <label for='chkAutoRecording'>
@@ -316,6 +323,11 @@
       </button>
     </div>
   </div>
+</div>
+<div id="speedControls" class="speed-controls" role="group" aria-label="게임 속도">
+  <button type="button" data-speed="1">x1</button>
+  <button type="button" data-speed="2">x2</button>
+  <button type="button" data-speed="3">x3</button>
 </div>
 <div id="marbleSkins" class="modal" role="dialog" aria-modal="true" aria-labelledby="marbleSkinsTitle">
   <h2 id="marbleSkinsTitle">구슬 꾸미기</h2>

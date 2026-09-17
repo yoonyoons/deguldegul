@@ -71,6 +71,10 @@ div.copyright a {
     mask-image: url('images/palette.svg');
   }
 
+  &.school {
+    mask-image: url('images/school.svg');
+  }
+
   &.record {
     mask-image: url('images/record.svg');
   }
@@ -128,8 +132,8 @@ div.copyright a {
     width: 100%;
     // 오른쪽 칼럼이 패널 높이를 결정하면 '여러명'을 열 때 범위 행(div.row, 35px)만큼
     // 패널이 세로로 튄다. 왼쪽이 항상 더 크도록 그만큼 미리 확보해 높이를 고정한다
-    // (커스텀 구슬 행이 추가되어 35px을 더 확보한다)
-    min-height: calc(5rem + 70px);
+    // (커스텀 구슬 행과, 학교 맵일 때 나타나는 학교 이름 행만큼 더 확보한다)
+    min-height: calc(5rem + 105px);
     border: none;
     background: #999;
     font-size: 14pt;
@@ -208,6 +212,11 @@ div.copyright a {
         align-items: center;
       }
 
+      // 학교 맵을 골랐을 때만 보인다
+      &.row-school:not(.active) {
+        display: none;
+      }
+
       // div.right div.row 와 같은 자리에 두어야 display:flex 를 이긴다
       &.row-range {
         display: none;
@@ -235,6 +244,20 @@ div.copyright a {
     width: 100%;
     border-radius: 5px;
     background: #999;
+  }
+
+  input[type=text] {
+    height: 25px;
+    width: 100%;
+    border: none;
+    border-radius: 5px;
+    background: #999;
+    padding: 0 8px;
+    font-size: 11pt;
+
+    &::placeholder {
+      color: #555;
+    }
   }
 
   input[type=checkbox] {
@@ -602,6 +625,36 @@ div.copyright a {
 
   }
 
+}
+
+#speedControls {
+  position: fixed;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 998;
+  display: flex;
+  gap: 2px;
+  padding: 3px;
+  border-radius: 8px;
+  background: rgba(34, 34, 34, 0.75);
+
+  button {
+    min-width: 40px;
+    height: 28px;
+    border: none;
+    border-radius: 5px;
+    background: transparent;
+    color: #ddd;
+    font-weight: bold;
+    font-size: 11pt;
+    cursor: pointer;
+
+    &.active {
+      background: #00baff;
+      color: #fff;
+    }
+  }
 }
 
 div.toast {
